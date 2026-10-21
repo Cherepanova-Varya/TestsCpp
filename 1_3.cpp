@@ -1,7 +1,7 @@
 ﻿#include <iostream>
-#include <string>
+#include <cstring>
 
-void clear(char (&table)[5][10]) {
+void clear(char(&table)[5][10]) {
   for (int i = 0; i < 5; ++i) {
     for (int j = 0; j < 10; ++j) {
       table[i][j] = ' ';
@@ -9,7 +9,7 @@ void clear(char (&table)[5][10]) {
   }
 }
 
-bool put(char (&table)[5][10], int x, int y, char c) {
+bool put(char(&table)[5][10], int x, int y, char c) {
   if (x >= 0 && y >= 0 && x < 10 && y < 5) {
     table[y][x] = c;
     return true;
@@ -17,9 +17,9 @@ bool put(char (&table)[5][10], int x, int y, char c) {
   return false;
 }
 
-bool text(char (&table)[5][10], int x, int y, std::string w) {
-  if (y >=0 && y < 5 && x >= 0 && x + w.length() - 1 < 10) {
-    for (int i = x; i < x + w.length(); ++i) {
+bool text(char(&table)[5][10], int x, int y, char w[15]) {
+  if (y >= 0 && y < 5 && x >= 0 && x + std::strlen(w) - 1 < 10) {
+    for (int i = x; i < x + std::strlen(w); ++i) {
       table[y][i] = w[i - x];
     }
     return true;
@@ -27,7 +27,7 @@ bool text(char (&table)[5][10], int x, int y, std::string w) {
   return false;
 }
 
-void print(char (&table)[5][10]) {
+void print(char(&table)[5][10]) {
   for (int i = 0; i < 5; ++i) {
     for (int j = 0; j < 10; ++j) {
       std::cout << table[i][j];
@@ -39,12 +39,12 @@ void print(char (&table)[5][10]) {
 int main() {
   char table[5][10];
   clear(table);
-  std::string command{""};
+  char command[15];
   std::cin >> command;
-  while (command != "quit") {
-    if (command == "clear") {
+  while (std::strcmp(command, "quit") != 0) {
+    if (std::strcmp(command, "clear") == 0) {
       clear(table);
-    } else if (command == "put") {
+    } else if (std::strcmp(command, "put") == 0) {
       int x{0};
       int y{0};
       char c{'0'};
@@ -52,10 +52,10 @@ int main() {
       if (!put(table, x, y, c)) {
         std::cout << "error" << "\n";
       }
-    } else if (command == "text") {
+    } else if (std::strcmp(command, "text") == 0) {
       int x{0};
       int y{0};
-      std::string w{""};
+      char w[15];
       std::cin >> x >> y >> w;
       if (!text(table, x, y, w)) {
         std::cout << "error" << "\n";
