@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string>
+#include <cstring>
 
 // Заполняем классный журнал. Информация хранится в двух массивах: посещаемость - в visiting, отметки - в grades;
 // Если ученик на уроке не присутствовал, вместо отметки записываем причину отсутствия: Б, УП, НП, ...
@@ -12,7 +12,7 @@ int main() {
   int classes{0};
   int students{0};
   int lessons{0};
-  std::cout << "The amount of classes, lessons and students: " << "\n";
+  std::cout << "The amount of classes, students and lessons: " << "\n";
   std::cin >> classes >> students >> lessons;
 
   int*** visiting = new int** [classes];
@@ -22,7 +22,7 @@ int main() {
     grades[i] = new void** [students];
     for (int j = 0; j < students; ++j) {
       visiting[i][j] = new int[lessons];
-      grades[i][j] = new void*[lessons];
+      grades[i][j] = new void* [lessons];
       for (int k = 0; k < lessons; ++k) {
         visiting[i][j][k] = 0;
         grades[i][j][k] = nullptr;
@@ -45,25 +45,26 @@ int main() {
     int les{0};
     std::cout << "The ordinal number of the lesson to be filled in: ";
     std::cin >> les;
-    std::string visit{""};
+    char visit[10];
     std::cout << "Was the student in the lesson (present/absent): ";
     std::cin >> visit;
 
     void* data = nullptr;
 
-    if (visit == "present") {
+    if (std::strcmp(visit, "present") == 0) {
       int grade;
       std::cout << "The grade of a student: ";
       std::cin >> grade;
       visiting[cl][st][les] = 1;
       data = new int(grade);
     }
-    if (visit == "absent") {
-      std::string reason;
+    if (std::strcmp(visit, "absent") == 0) {
+      char reason[10];
       std::cout << "The reason of absent: ";
       std::cin >> reason;
       visiting[cl][st][les] = -1;
-      data = new std::string(reason);
+      data = new char[10];
+      std::memcpy(data, reason, 10);
     }
     grades[cl][st][les] = data;
   }
@@ -85,7 +86,7 @@ int main() {
       if (visiting[show][j][k] == 1) {
         std::cout << *static_cast<int*>(grades[show][j][k]) << "           ";
       } else if (visiting[show][j][k] == -1) {
-        std::cout << *static_cast<std::string*>(grades[show][j][k]) << "           ";
+        std::cout << static_cast<char*>(grades[show][j][k]) << "           ";
       } else {
         std::cout << "-" << "           ";
       }
@@ -99,7 +100,7 @@ int main() {
         if (visiting[i][j][k] == 1) {
           delete static_cast<int*>(grades[i][j][k]);
         } else if (visiting[i][j][k] == -1) {
-          delete static_cast<std::string*>(grades[i][j][k]);
+          delete[] static_cast<char*>(grades[i][j][k]);
         }
       }
       delete[] grades[i][j];
